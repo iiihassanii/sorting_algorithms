@@ -42,6 +42,8 @@ void insertion_sort_list(listint_t **list)
 	listint_t *node;
 	int flag = 0;
 
+	if (list == NULL || *list == NULL || (*list)->next == NULL)
+		return;
 	node = *list;
 	while (node)
 	{
