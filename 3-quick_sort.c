@@ -1,11 +1,14 @@
 #include "sort.h"
+
 /**
- * swap - Swaps two integer values.
+ * swapidx - Swaps the values of two integers.
  * @num1: Pointer to the first integer.
  * @num2: Pointer to the second integer.
+ *
+ * This function swaps the values of the two integers
+ * by utilizing a temporary variable.
  */
-
-void swap(int *num1, int *num2)
+void swapidx(int *num1, int *num2)
 {
 	int tmp;
 
@@ -13,49 +16,66 @@ void swap(int *num1, int *num2)
 	*num1 = *num2;
 	*num2 = tmp;
 }
+
 /**
- * lumoto - Implements the Lomuto partition scheme for Quick sort.
- * @array: Pointer to the array to be sorted.
- * @low: Index of the first element of the partition to be sorted.
- * @high: Index of the last element of the partition to be sorted.
- * @size: Size of the array.
+ * lomuto - Partitions an array based on a pivot.
+ * @array: Pointer to the array.
+ * @left: The left index of the current lomuto.
+ * @right: The right index of the current lomuto.
+ * @size: The size of the array.
+ * Return: int
  */
-
-void lumoto(int *array, size_t low, size_t high, size_t size)
+int lomuto(int *array, int left, int right, size_t size)
 {
+	int *pivot, j, i;
 
-	int pivot = array[high];
-	size_t i = low, j = low;
-
-	if (low >= high)
-		return;
-
-	for (; i < high; i++)
+	pivot = array + right;
+	for (j = i = left; i < right; i++)
 	{
-		if (array[i] <= pivot)
+		if (array[i] < *pivot)
 		{
-			swap(&array[i], &array[j]);
+			if (j < i)
+			{
+				swapidx(array + i, array + j);
+				print_array(array, size);
+			}
 			j++;
 		}
 	}
 
-	swap(&array[j], &array[high]);
-	print_array(array, size);
+	if (array[j] > *pivot)
+	{
+		swapidx(array + j, pivot);
+		print_array(array, size);
+	}
 
-	if (j > 0)
-		lumoto(array, low, j - 1, size);
-
-	lumoto(array, j + 1, high, size);
+	return (j);
 }
-
 /**
- * quick_sort - Sorts an array of integers
- * in ascending order using Quick sort.
- * @array: Pointer to the array to be sorted.
- * @size: Size of the array.
+ * quickSort - Sorts an array using QuickSort.
+ * @arr: Pointer to the array.
+ * @low: The lower index of the current partition.
+ * @high: The higher index of the current partition.
+ * @size: The size of the array.
+ */
+void quickSort(int *arr, int low, int high, size_t size)
+{
+	if (low < high)
+	{
+		int pi = lomuto(arr, low, high, size);
+
+		quickSort(arr, low, pi - 1, size);
+		quickSort(arr, pi + 1, high, size);
+	}
+}
+/**
+ * quick_sort - Sorts an array using QuickSort.
+ * @array: Pointer to the array.
+ * @size: The size of the array.
  */
 void quick_sort(int *array, size_t size)
 {
-	lumoto(array, 0, size - 1, size);
-	print_array(array, size);
+	if (array == NULL || size <= 1)
+		return;
+	quickSort(array, 0, size - 1, size);
 }
